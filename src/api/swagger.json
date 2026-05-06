@@ -1,0 +1,1715 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"SteamGame": {
+				"properties": {
+					"appid": {
+						"type": "number",
+						"format": "double"
+					},
+					"name": {
+						"type": "string"
+					},
+					"playtime_forever": {
+						"type": "number",
+						"format": "double"
+					},
+					"img_icon_url": {
+						"type": "string"
+					},
+					"img_logo_url": {
+						"type": "string"
+					},
+					"playtime_windows_forever": {
+						"type": "number",
+						"format": "double"
+					},
+					"playtime_mac_forever": {
+						"type": "number",
+						"format": "double"
+					},
+					"playtime_linux_forever": {
+						"type": "number",
+						"format": "double"
+					},
+					"rtime_last_played": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"appid"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"SteamGamesResponse": {
+				"properties": {
+					"success": {
+						"type": "boolean"
+					},
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/SteamGame"
+						},
+						"type": "array"
+					},
+					"error": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"SteamErrorResponse": {
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"enum": [
+							false
+						],
+						"nullable": false
+					},
+					"error": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"success",
+					"error"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"SteamPlayer": {
+				"properties": {
+					"steamid": {
+						"type": "string"
+					},
+					"personaname": {
+						"type": "string"
+					},
+					"profileurl": {
+						"type": "string"
+					},
+					"avatar": {
+						"type": "string"
+					},
+					"avatarmedium": {
+						"type": "string"
+					},
+					"avatarfull": {
+						"type": "string"
+					},
+					"personastate": {
+						"type": "number",
+						"format": "double"
+					},
+					"realname": {
+						"type": "string"
+					},
+					"loccountrycode": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"steamid",
+					"personaname"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"SteamPlayerResponse": {
+				"properties": {
+					"success": {
+						"type": "boolean"
+					},
+					"data": {
+						"$ref": "#/components/schemas/SteamPlayer"
+					},
+					"error": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"LibraryItemDto": {
+				"properties": {
+					"userGameId": {
+						"type": "string"
+					},
+					"id": {
+						"type": "string"
+					},
+					"title": {
+						"type": "string"
+					},
+					"launcher": {
+						"type": "string"
+					},
+					"launcherId": {
+						"type": "string"
+					},
+					"coverUrl": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"releaseDate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"genres": {},
+					"isInstalled": {
+						"type": "boolean"
+					},
+					"installPath": {
+						"type": "string"
+					},
+					"executablePath": {
+						"type": "string"
+					},
+					"playtime": {
+						"type": "number",
+						"format": "double"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"userGameId",
+					"id",
+					"title",
+					"launcher",
+					"launcherId",
+					"isInstalled",
+					"playtime",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"LibraryErrorResponse": {
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"enum": [
+							false
+						],
+						"nullable": false
+					},
+					"error": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"success",
+					"error"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GameActionResult": {
+				"properties": {
+					"success": {
+						"type": "boolean"
+					},
+					"launched": {
+						"type": "boolean"
+					},
+					"protocolUrl": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"error": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"success",
+					"launched"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CapabilitiesResponse": {
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"enum": [
+							true
+						],
+						"nullable": false
+					},
+					"launchers": {}
+				},
+				"required": [
+					"success",
+					"launchers"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AuthUrlResponse": {
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"enum": [
+							true
+						],
+						"nullable": false
+					},
+					"authUrl": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"success",
+					"authUrl"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ApiError": {
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"enum": [
+							false
+						],
+						"nullable": false
+					},
+					"error": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"success",
+					"error"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MessageResponse": {
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"enum": [
+							true
+						],
+						"nullable": false
+					},
+					"message": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"success",
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"LinkLauncherBody": {
+				"properties": {
+					"launcherType": {
+						"type": "string"
+					},
+					"accountName": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"launcherType",
+					"accountName"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ExchangeCodeBody": {
+				"properties": {
+					"code": {
+						"type": "string"
+					},
+					"state": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"code",
+					"state"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"LocalConfigResponse": {
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"enum": [
+							true
+						],
+						"nullable": false
+					},
+					"config": {}
+				},
+				"required": [
+					"success",
+					"config"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"LocalConfigBody": {
+				"properties": {
+					"installBasePath": {
+						"type": "string"
+					},
+					"executablePattern": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ErrorResponse": {
+				"properties": {
+					"success": {
+						"type": "boolean",
+						"enum": [
+							false
+						],
+						"nullable": false
+					},
+					"message": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"success",
+					"message"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"RegisterBody": {
+				"properties": {
+					"username": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"username",
+					"email",
+					"password"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"LoginBody": {
+				"properties": {
+					"email": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"email",
+					"password"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GoogleAuthBody": {
+				"properties": {
+					"idToken": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"idToken"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {
+			"jwt": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
+			}
+		}
+	},
+	"info": {
+		"title": "Launcher of Launchers API",
+		"version": "1.0.0",
+		"description": "Backend for unified launcher - Express + TypeScript",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"paths": {
+		"/steam/{steamId}/owned-games": {
+			"get": {
+				"operationId": "GetOwnedGames",
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SteamGamesResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "SteamID inválido",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SteamErrorResponse"
+								}
+							}
+						}
+					},
+					"503": {
+						"description": "Steam API no configurada",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SteamErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Devuelve el listado de juegos en propiedad de un usuario de Steam.",
+				"tags": [
+					"Steam"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "SteamID64 de 17 dígitos (ej: 76561198000000000)",
+						"in": "path",
+						"name": "steamId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Incluir nombre e imágenes de cada juego (por defecto true)",
+						"in": "query",
+						"name": "includeAppInfo",
+						"required": false,
+						"schema": {
+							"type": "boolean"
+						}
+					}
+				]
+			}
+		},
+		"/steam/{steamId}/player-summary": {
+			"get": {
+				"operationId": "GetPlayerSummary",
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SteamPlayerResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Jugador no encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SteamErrorResponse"
+								}
+							}
+						}
+					},
+					"503": {
+						"description": "Steam API no configurada",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SteamErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Devuelve el resumen del perfil de un usuario de Steam.",
+				"tags": [
+					"Steam"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "SteamID64 de 17 dígitos",
+						"in": "path",
+						"name": "steamId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/steam/{steamId}/recently-played": {
+			"get": {
+				"operationId": "GetRecentlyPlayedGames",
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SteamGamesResponse"
+								}
+							}
+						}
+					},
+					"503": {
+						"description": "Steam API no configurada",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SteamErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Devuelve los juegos jugados recientemente (últimas 2 semanas).",
+				"tags": [
+					"Steam"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "SteamID64 de 17 dígitos",
+						"in": "path",
+						"name": "steamId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"description": "Número máximo de juegos a devolver (por defecto 10)",
+						"in": "query",
+						"name": "count",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/library/all": {
+			"get": {
+				"operationId": "GetAll",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/LibraryItemDto"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"description": "Devuelve todos los juegos de la biblioteca del usuario",
+				"tags": [
+					"Library"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/library/{userGameId}/icon": {
+			"get": {
+				"operationId": "GetIcon",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"image/png": {
+								"schema": {
+									"anyOf": [
+										{
+											"type": "string",
+											"format": "byte"
+										},
+										{}
+									]
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Ícono no disponible",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/LibraryErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Devuelve el ícono PNG embebido en el ejecutable local del juego.\r\n404 cuando el juego no está instalado o no tiene executablePath.\r\nCacheable 24 h — los íconos no cambian entre sincronizaciones.",
+				"tags": [
+					"Library"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userGameId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/library/{userGameId}/launch": {
+			"post": {
+				"operationId": "LaunchGame",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GameActionResult"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "No se puede lanzar",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/LibraryErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Juego no encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/LibraryErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Lanza un juego instalado.\r\nPrioridad: executablePath guardado → protocol URL del launcher → auto-descubrimiento del .exe.",
+				"tags": [
+					"Library"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userGameId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/library/{userGameId}/install": {
+			"post": {
+				"operationId": "InstallGame",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GameActionResult"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "No se puede instalar",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/LibraryErrorResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Juego no encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/LibraryErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Abre el launcher para instalar un juego sincronizado pero no instalado localmente.",
+				"tags": [
+					"Library"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userGameId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/library/{userGameId}/uninstall": {
+			"post": {
+				"operationId": "UninstallGame",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GameActionResult"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Juego no encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/LibraryErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Abre el launcher para desinstalar un juego.\r\nNO borra archivos directamente. El estado se actualiza en la próxima sincronización.",
+				"tags": [
+					"Library"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userGameId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/launchers/capabilities": {
+			"get": {
+				"operationId": "GetCapabilities",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CapabilitiesResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Devuelve las capacidades de todos los launchers registrados",
+				"tags": [
+					"Launchers"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/launchers/linked": {
+			"get": {
+				"operationId": "GetLinkedAccounts",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Devuelve las cuentas de launcher vinculadas del usuario",
+				"tags": [
+					"Launchers"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/launchers/{launcherType}/auth-url": {
+			"get": {
+				"operationId": "GetAuthUrl",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AuthUrlResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Launcher no soportado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Devuelve la URL de autenticación OAuth2/OpenID para el launcher indicado.\r\nSteam usa OpenID 2.0; el resto usa OAuth2.",
+				"tags": [
+					"Launchers"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "launcherType",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "returnUrl",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/launchers/{launcherType}/callback": {
+			"get": {
+				"operationId": "HandleCallback",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Parámetros inválidos",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Callback OAuth2 para launchers que redirigen al backend directamente.\r\nRuta pública — no requiere JWT.",
+				"tags": [
+					"Launchers"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "launcherType",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "code",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "state",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/launchers/link": {
+			"post": {
+				"operationId": "LinkLauncher",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"400": {
+						"description": "Datos inválidos",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Vincula manualmente una cuenta de launcher (sin OAuth2)",
+				"tags": [
+					"Launchers"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/LinkLauncherBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/launchers/{accountId}": {
+			"delete": {
+				"operationId": "UnlinkLauncher",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Launcher account not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Desvincula una cuenta de launcher",
+				"tags": [
+					"Launchers"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "accountId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/launchers/{accountId}/sync": {
+			"post": {
+				"operationId": "SyncLauncher",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"errors": {
+											"type": "number",
+											"format": "double"
+										},
+										"count": {
+											"type": "number",
+											"format": "double"
+										},
+										"message": {
+											"type": "string"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												true
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"errors",
+										"count",
+										"message",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Linked launcher account not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Sincroniza un launcher específico del usuario.\r\nDevuelve el resumen de juegos agregados/actualizado.",
+				"tags": [
+					"Launchers"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "accountId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/launchers/sync/all": {
+			"post": {
+				"operationId": "SyncAllLaunchers",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"summary": {},
+										"message": {
+											"type": "string"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												true
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"summary",
+										"message",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"description": "Sincroniza todos los launchers vinculados del usuario.",
+				"tags": [
+					"Launchers"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/launchers/scan/local": {
+			"get": {
+				"operationId": "ScanLocalInstallations",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"summary": {},
+										"message": {
+											"type": "string"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												true
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"summary",
+										"message",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"description": "Realiza un escaneo local directo de instalaciones para todos los launchers que soportan detección de estado.\r\nNo requiere sincronización previa y no escribe a la base de datos.",
+				"tags": [
+					"Launchers"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/launchers/{launcherType}/scan/local": {
+			"get": {
+				"operationId": "ScanLocalInstallationsByLauncher",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"summary": {},
+										"message": {
+											"type": "string"
+										},
+										"success": {
+											"type": "boolean",
+											"enum": [
+												true
+											],
+											"nullable": false
+										}
+									},
+									"required": [
+										"summary",
+										"message",
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Unable to scan",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Realiza un escaneo local directo solo para el tipo de launcher solicitado.",
+				"tags": [
+					"Launchers"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "launcherType",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/launchers/{launcherType}/exchange": {
+			"post": {
+				"operationId": "ExchangeCode",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "code and state are required",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Utilizado para launchers cuyo redirect_uri apunta a una URL externa (p.ej GOG).\r\nEl frontend extrae el `code` y `state` de esa URL de redirección y\r\nlos envía aquí para que el backend complete el intercambio OAuth2.",
+				"tags": [
+					"Launchers"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "launcherType",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ExchangeCodeBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/launchers/{launcherType}/local-config": {
+			"get": {
+				"operationId": "GetLocalConfig",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/LocalConfigResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "GET /api/launchers/:launcherType/local-config\r\nDevuelve la configuración de instalación local almacenada para este launcher.",
+				"tags": [
+					"Launchers"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "launcherType",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpsertLocalConfig",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/LocalConfigResponse"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "At least one property is required",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApiError"
+								}
+							}
+						}
+					}
+				},
+				"description": "PUT /api/launchers/:launcherType/local-config\r\nCrea o actualiza la configuración de instalación local para este launcher.\r\n\r\ninstallBasePath   — directorio raíz personalizado donde se instalan los juegos\r\nexecutablePattern — plantilla para la ruta del ejecutable; soporta\r\n                    placeholders {installPath} y {gameName},\r\n                    p.ej \"{installPath}\\\\bin\\\\{gameName}.exe\"",
+				"tags": [
+					"Launchers"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "launcherType",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/LocalConfigBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/register": {
+			"post": {
+				"operationId": "Register",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"400": {
+						"description": "Datos inválidos",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Usuario ya existe",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Registra un nuevo usuario con email y contraseña",
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/RegisterBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/login": {
+			"post": {
+				"operationId": "Login",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"401": {
+						"description": "Credenciales inválidas",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Inicia sesión con email y contraseña",
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/LoginBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/register/google": {
+			"post": {
+				"operationId": "RegisterWithGoogle",
+				"responses": {
+					"201": {
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"400": {
+						"description": "Token inválido",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"503": {
+						"description": "Google Auth no configurado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Registra un nuevo usuario usando un Google ID token",
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/GoogleAuthBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/login/google": {
+			"post": {
+				"operationId": "LoginWithGoogle",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"401": {
+						"description": "Sin cuenta asociada",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"503": {
+						"description": "Google Auth no configurado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Inicia sesión usando un Google ID token",
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/GoogleAuthBody"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}
