@@ -1,5 +1,5 @@
 import { Controller, Get, Path, Query, Route, Tags, SuccessResponse, Response } from 'tsoa';
-import { SteamWebApiService } from '@services/launchers/SteamWebApiService';
+import { SteamWebApiService } from '@services/launchers/providers/SteamWebApiService';
 import {
   SteamErrorResponse,
   SteamGame,

@@ -5,8 +5,5 @@
     "src/api/routes/routes.ts",
     "src/api/swagger.json"
   ],
-  "exec": "tsoa spec-and-routes && ts-node -r tsconfig-paths/register src/index.ts",
-  "env": {
-    "NODE_ENV": "development"
-  }
+  "exec": "tsoa spec-and-routes && ts-node -r tsconfig-paths/register src/index.ts"
 }

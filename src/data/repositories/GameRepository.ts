@@ -8,9 +8,41 @@ import type { LauncherType } from '@shared/types/launcher.types';
 /** Synthetic launcherId prefixes created by directory-fallback scanners. */
 const SYNTHETIC_PREFIX_RE = /_dir_/i;
 
+export type StoreDetailsData = Partial<Pick<GameCatalog,
+  | 'coverUrl'
+  | 'backgroundImageUrl'
+  | 'description'
+  | 'detailedDescription'
+  | 'aboutTheGame'
+  | 'releaseDate'
+  | 'genres'
+  | 'categories'
+  | 'screenshots'
+  | 'movies'
+  | 'developers'
+  | 'publishers'
+  | 'platforms'
+  | 'metacriticScore'
+  | 'metacriticUrl'
+  | 'website'
+  | 'supportedLanguages'
+  | 'requiredAge'
+  | 'isFree'
+>>;
+
 export class GameCatalogRepository extends BaseRepository<GameCatalog> {
   constructor() {
     super(GameCatalog);
+  }
+
+  /**
+   * Avoids clobbering existing DB values with `undefined` during partial syncs
+   * (e.g. API-only sync passes no gridImageUrl after a local scan already found it).
+   */
+  private static omitUndefined<T extends Record<string, unknown>>(data: T): Partial<T> {
+    return Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined),
+    ) as Partial<T>;
   }
 
   async findByLauncherAndId(launcher: LauncherType, launcherId: string): Promise<GameCatalog | null> {
@@ -23,6 +55,32 @@ export class GameCatalogRepository extends BaseRepository<GameCatalog> {
       limit,
       order: [['title', 'ASC']],
     });
+  }
+
+  /**
+   * Returns catalog entries for a given launcher whose detailsFetchedAt is NULL
+   * (never enriched) filtered to the provided set of launcherIds.
+   */
+  async findUnenriched(launcher: LauncherType, launcherIds: string[]): Promise<GameCatalog[]> {
+    if (launcherIds.length === 0) return [];
+    return GameCatalog.findAll({
+      where: {
+        launcher,
+        launcherId: { [Op.in]: launcherIds },
+        detailsFetchedAt: { [Op.is]: null },
+      },
+      attributes: ['id', 'launcherId'],
+    });
+  }
+
+  /**
+   * Persists store details for a catalog entry and stamps detailsFetchedAt = NOW.
+   */
+  async saveStoreDetails(id: string, details: StoreDetailsData): Promise<void> {
+    await GameCatalog.update(
+      { ...details, detailsFetchedAt: new Date() },
+      { where: { id } },
+    );
   }
 
   /**
@@ -42,21 +100,23 @@ export class GameCatalogRepository extends BaseRepository<GameCatalog> {
   async upsertByLauncherId(
     launcher: LauncherType,
     launcherId: string,
-    data: Partial<Pick<GameCatalog, 'title' | 'coverUrl' | 'description' | 'releaseDate' | 'genres'>>,
+    data: Partial<Pick<GameCatalog, 'title' | 'coverUrl' | 'gridImageUrl' | 'description' | 'releaseDate' | 'genres'>>,
   ): Promise<GameCatalog> {
+    const safeData = GameCatalogRepository.omitUndefined(data);
+
     const [record, created] = await GameCatalog.findOrCreate({
       where: { launcher, launcherId },
-      defaults: { launcher, launcherId, ...data },
+      defaults: { launcher, launcherId, ...safeData },
     });
-    if (!created) {
-      await record.update(data);
+    if (!created && Object.keys(safeData).length > 0) {
+      await record.update(safeData);
     }
 
     // If this is a real (non-synthetic) ID and the title is known, clean up any
     // synthetic counterpart for the same (launcher, title) that was created by
     // a directory-fallback scan before the real ID was available.
-    if (data.title && !SYNTHETIC_PREFIX_RE.test(launcherId)) {
-      await this.absorbSyntheticDuplicates(launcher, data.title, record.id);
+    if (safeData.title && !SYNTHETIC_PREFIX_RE.test(launcherId)) {
+      await this.absorbSyntheticDuplicates(launcher, safeData.title, record.id);
     }
 
     return record;
@@ -74,12 +134,18 @@ export class GameCatalogRepository extends BaseRepository<GameCatalog> {
     title: string,
     realCatalogId: string,
   ): Promise<void> {
+    // SQLite doesn't provide a built-in REGEXP function; use LIKE instead
+    // when running against SQLite to remain portable and avoid runtime errors.
+    const launcherIdFilter = sequelize.getDialect() === 'sqlite'
+      ? { [Op.like]: '%_dir_%' }
+      : { [Op.regexp]: '_dir_' };
+
     const synthetics = await GameCatalog.findAll({
       where: {
         launcher,
         title,
         id: { [Op.ne]: realCatalogId },
-        launcherId: { [Op.regexp]: '_dir_' },
+        launcherId: launcherIdFilter,
       },
       attributes: ['id'],
     });
@@ -120,3 +186,4 @@ export class GameCatalogRepository extends BaseRepository<GameCatalog> {
 }
 
 export default new GameCatalogRepository();
+

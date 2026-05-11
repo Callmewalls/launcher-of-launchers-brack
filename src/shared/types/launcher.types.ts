@@ -1,5 +1,5 @@
 // Single source of truth for launcher type — import from here everywhere
-export type LauncherType = 'steam' | 'epic' | 'gog' | 'uplay' | 'origin' | 'battlenet' | 'other';
+export type LauncherType = 'steam' | 'epic' | 'gog' | 'uplay' | 'origin' | 'battlenet' | 'xbox' | 'other';
 
 export interface ILauncherAccount {
   id: string;
@@ -30,12 +30,20 @@ export interface ILauncherGame {
   launcherId: string;
   title: string;
   coverUrl?: string;
+  description?: string;
   playtimeMinutes?: number;
   isInstalled: boolean;
   installPath?: string;
   /** Known executable path (e.g. extracted directly from a launcher's registry entry). */
   executablePath?: string;
   lastPlayedAt?: Date;
+  /**
+   * Absolute path to the local grid portrait image (600×900) cached by Steam
+   * under <steam_root>\appcache\librarycache\<appid>\library_600x900.jpg|png.
+   * Only populated when the file is found on disk during a local scan.
+   * Served by the backend as a static file or base64 via the icon endpoint.
+   */
+  gridImagePath?: string;
 }
 
 export interface LauncherCapabilities {

@@ -54,6 +54,32 @@ export class UserAuthService {
     return this.buildAuthResponse(user);
   }
 
+  /**
+   * Auto-login silencioso para uso en desktop local.
+   * Crea el usuario local si no existe y devuelve un JWT válido.
+   * No requiere credenciales — diseñado para ser llamado únicamente
+   * desde localhost.
+   */
+  async autoLogin(): Promise<AuthResponse> {
+    const LOCAL_EMAIL    = 'local@launcher.app';
+    const LOCAL_USERNAME = 'local';
+    const LOCAL_PASSWORD = 'local-desktop-only';
+
+    let user = await userRepository.findByEmail(LOCAL_EMAIL);
+
+    if (!user) {
+      const passwordHash = await bcrypt.hash(LOCAL_PASSWORD, 10);
+      user = await userRepository.create({
+        username: LOCAL_USERNAME,
+        email:    LOCAL_EMAIL,
+        password: passwordHash,
+      });
+      await launcherConfigRepository.seedDefaultsForUser(user.id).catch(() => { /* no bloquea */ });
+    }
+
+    return this.buildAuthResponse(user);
+  }
+
   async login(email: string, password: string): Promise<AuthResponse> {
     const normalizedEmail = email.trim().toLowerCase();
     const user = await userRepository.findByEmail(normalizedEmail);

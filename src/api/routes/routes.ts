@@ -92,6 +92,7 @@ const models: TsoaRoute.Models = {
             "launcher": {"dataType":"string","required":true},
             "launcherId": {"dataType":"string","required":true},
             "coverUrl": {"dataType":"string"},
+            "gridImageUrl": {"dataType":"string"},
             "description": {"dataType":"string"},
             "releaseDate": {"dataType":"datetime"},
             "genres": {"dataType":"any"},
@@ -105,11 +106,66 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Record_string.string_": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"string"},"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "BatchGridImagesResponse": {
+        "dataType": "refAlias",
+        "type": {"ref":"Record_string.string_","validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "BatchGridImagesBody": {
+        "dataType": "refObject",
+        "properties": {
+            "ids": {"dataType":"array","array":{"dataType":"string"},"required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "LibraryErrorResponse": {
         "dataType": "refObject",
         "properties": {
             "success": {"dataType":"enum","enums":[false],"required":true},
             "error": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "GameDetailDto": {
+        "dataType": "refObject",
+        "properties": {
+            "userGameId": {"dataType":"string","required":true},
+            "id": {"dataType":"string","required":true},
+            "title": {"dataType":"string","required":true},
+            "launcher": {"dataType":"string","required":true},
+            "launcherId": {"dataType":"string","required":true},
+            "coverUrl": {"dataType":"string"},
+            "gridImageUrl": {"dataType":"string"},
+            "backgroundImageUrl": {"dataType":"string"},
+            "description": {"dataType":"string"},
+            "detailedDescription": {"dataType":"string"},
+            "aboutTheGame": {"dataType":"string"},
+            "releaseDate": {"dataType":"datetime"},
+            "genres": {"dataType":"any"},
+            "categories": {"dataType":"any"},
+            "screenshots": {"dataType":"any"},
+            "movies": {"dataType":"any"},
+            "developers": {"dataType":"any"},
+            "publishers": {"dataType":"any"},
+            "platforms": {"dataType":"any"},
+            "metacriticScore": {"dataType":"double"},
+            "metacriticUrl": {"dataType":"string"},
+            "website": {"dataType":"string"},
+            "supportedLanguages": {"dataType":"string"},
+            "requiredAge": {"dataType":"double"},
+            "isFree": {"dataType":"boolean"},
+            "detailsFetchedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"enum","enums":[null]}]},
+            "isInstalled": {"dataType":"boolean","required":true},
+            "installPath": {"dataType":"string"},
+            "executablePath": {"dataType":"string"},
+            "playtime": {"dataType":"double","required":true},
         },
         "additionalProperties": false,
     },
@@ -167,6 +223,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "launcherType": {"dataType":"string","required":true},
             "accountName": {"dataType":"string","required":true},
+            "platformUserId": {"dataType":"string"},
         },
         "additionalProperties": false,
     },
@@ -255,7 +312,7 @@ export function RegisterRoutes(app: Router) {
                 steamId: {"in":"path","name":"steamId","required":true,"dataType":"string"},
                 includeAppInfo: {"in":"query","name":"includeAppInfo","dataType":"boolean"},
         };
-        app.get('/steam/:steamId/owned-games',
+        app.get('/api/steam/:steamId/owned-games',
             ...(fetchMiddlewares<RequestHandler>(SteamController)),
             ...(fetchMiddlewares<RequestHandler>(SteamController.prototype.getOwnedGames)),
 
@@ -285,7 +342,7 @@ export function RegisterRoutes(app: Router) {
         const argsSteamController_getPlayerSummary: Record<string, TsoaRoute.ParameterSchema> = {
                 steamId: {"in":"path","name":"steamId","required":true,"dataType":"string"},
         };
-        app.get('/steam/:steamId/player-summary',
+        app.get('/api/steam/:steamId/player-summary',
             ...(fetchMiddlewares<RequestHandler>(SteamController)),
             ...(fetchMiddlewares<RequestHandler>(SteamController.prototype.getPlayerSummary)),
 
@@ -316,7 +373,7 @@ export function RegisterRoutes(app: Router) {
                 steamId: {"in":"path","name":"steamId","required":true,"dataType":"string"},
                 count: {"in":"query","name":"count","dataType":"double"},
         };
-        app.get('/steam/:steamId/recently-played',
+        app.get('/api/steam/:steamId/recently-played',
             ...(fetchMiddlewares<RequestHandler>(SteamController)),
             ...(fetchMiddlewares<RequestHandler>(SteamController.prototype.getRecentlyPlayedGames)),
 
@@ -346,7 +403,7 @@ export function RegisterRoutes(app: Router) {
         const argsLibraryHttpController_getAll: Record<string, TsoaRoute.ParameterSchema> = {
                 req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
-        app.get('/library/all',
+        app.get('/api/library/all',
             authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(LibraryHttpController)),
             ...(fetchMiddlewares<RequestHandler>(LibraryHttpController.prototype.getAll)),
@@ -374,11 +431,43 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsLibraryHttpController_getBatchGridImages: Record<string, TsoaRoute.ParameterSchema> = {
+                body: {"in":"body","name":"body","required":true,"ref":"BatchGridImagesBody"},
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+        };
+        app.post('/api/library/grid-images/batch',
+            authenticateMiddleware([{"jwt":[]}]),
+            ...(fetchMiddlewares<RequestHandler>(LibraryHttpController)),
+            ...(fetchMiddlewares<RequestHandler>(LibraryHttpController.prototype.getBatchGridImages)),
+
+            async function LibraryHttpController_getBatchGridImages(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsLibraryHttpController_getBatchGridImages, request, response });
+
+                const controller = new LibraryHttpController();
+
+              await templateService.apiHandler({
+                methodName: 'getBatchGridImages',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsLibraryHttpController_getIcon: Record<string, TsoaRoute.ParameterSchema> = {
                 userGameId: {"in":"path","name":"userGameId","required":true,"dataType":"string"},
                 req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
-        app.get('/library/:userGameId/icon',
+        app.get('/api/library/:userGameId/icon',
             authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(LibraryHttpController)),
             ...(fetchMiddlewares<RequestHandler>(LibraryHttpController.prototype.getIcon)),
@@ -406,11 +495,75 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsLibraryHttpController_getGridImage: Record<string, TsoaRoute.ParameterSchema> = {
+                userGameId: {"in":"path","name":"userGameId","required":true,"dataType":"string"},
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+        };
+        app.get('/api/library/:userGameId/grid',
+            authenticateMiddleware([{"jwt":[]}]),
+            ...(fetchMiddlewares<RequestHandler>(LibraryHttpController)),
+            ...(fetchMiddlewares<RequestHandler>(LibraryHttpController.prototype.getGridImage)),
+
+            async function LibraryHttpController_getGridImage(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsLibraryHttpController_getGridImage, request, response });
+
+                const controller = new LibraryHttpController();
+
+              await templateService.apiHandler({
+                methodName: 'getGridImage',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsLibraryHttpController_getDetail: Record<string, TsoaRoute.ParameterSchema> = {
+                userGameId: {"in":"path","name":"userGameId","required":true,"dataType":"string"},
+                req: {"in":"request","name":"req","required":true,"dataType":"object"},
+        };
+        app.get('/api/library/:userGameId/detail',
+            authenticateMiddleware([{"jwt":[]}]),
+            ...(fetchMiddlewares<RequestHandler>(LibraryHttpController)),
+            ...(fetchMiddlewares<RequestHandler>(LibraryHttpController.prototype.getDetail)),
+
+            async function LibraryHttpController_getDetail(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsLibraryHttpController_getDetail, request, response });
+
+                const controller = new LibraryHttpController();
+
+              await templateService.apiHandler({
+                methodName: 'getDetail',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsLibraryHttpController_launchGame: Record<string, TsoaRoute.ParameterSchema> = {
                 userGameId: {"in":"path","name":"userGameId","required":true,"dataType":"string"},
                 req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
-        app.post('/library/:userGameId/launch',
+        app.post('/api/library/:userGameId/launch',
             authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(LibraryHttpController)),
             ...(fetchMiddlewares<RequestHandler>(LibraryHttpController.prototype.launchGame)),
@@ -442,7 +595,7 @@ export function RegisterRoutes(app: Router) {
                 userGameId: {"in":"path","name":"userGameId","required":true,"dataType":"string"},
                 req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
-        app.post('/library/:userGameId/install',
+        app.post('/api/library/:userGameId/install',
             authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(LibraryHttpController)),
             ...(fetchMiddlewares<RequestHandler>(LibraryHttpController.prototype.installGame)),
@@ -474,7 +627,7 @@ export function RegisterRoutes(app: Router) {
                 userGameId: {"in":"path","name":"userGameId","required":true,"dataType":"string"},
                 req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
-        app.post('/library/:userGameId/uninstall',
+        app.post('/api/library/:userGameId/uninstall',
             authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(LibraryHttpController)),
             ...(fetchMiddlewares<RequestHandler>(LibraryHttpController.prototype.uninstallGame)),
@@ -504,7 +657,7 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsLauncherHttpController_getCapabilities: Record<string, TsoaRoute.ParameterSchema> = {
         };
-        app.get('/launchers/capabilities',
+        app.get('/api/launchers/capabilities',
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController)),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController.prototype.getCapabilities)),
 
@@ -534,7 +687,7 @@ export function RegisterRoutes(app: Router) {
         const argsLauncherHttpController_getLinkedAccounts: Record<string, TsoaRoute.ParameterSchema> = {
                 req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
-        app.get('/launchers/linked',
+        app.get('/api/launchers/linked',
             authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController)),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController.prototype.getLinkedAccounts)),
@@ -567,7 +720,7 @@ export function RegisterRoutes(app: Router) {
                 launcherType: {"in":"path","name":"launcherType","required":true,"dataType":"string"},
                 returnUrl: {"in":"query","name":"returnUrl","dataType":"string"},
         };
-        app.get('/launchers/:launcherType/auth-url',
+        app.get('/api/launchers/:launcherType/auth-url',
             authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController)),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController.prototype.getAuthUrl)),
@@ -601,7 +754,7 @@ export function RegisterRoutes(app: Router) {
                 code: {"in":"query","name":"code","dataType":"string"},
                 state: {"in":"query","name":"state","dataType":"string"},
         };
-        app.get('/launchers/:launcherType/callback',
+        app.get('/api/launchers/:launcherType/callback',
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController)),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController.prototype.handleCallback)),
 
@@ -632,7 +785,7 @@ export function RegisterRoutes(app: Router) {
                 body: {"in":"body","name":"body","required":true,"ref":"LinkLauncherBody"},
                 req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
-        app.post('/launchers/link',
+        app.post('/api/launchers/link',
             authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController)),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController.prototype.linkLauncher)),
@@ -664,7 +817,7 @@ export function RegisterRoutes(app: Router) {
                 accountId: {"in":"path","name":"accountId","required":true,"dataType":"string"},
                 req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
-        app.delete('/launchers/:accountId',
+        app.delete('/api/launchers/:accountId',
             authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController)),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController.prototype.unlinkLauncher)),
@@ -696,7 +849,7 @@ export function RegisterRoutes(app: Router) {
                 accountId: {"in":"path","name":"accountId","required":true,"dataType":"string"},
                 req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
-        app.post('/launchers/:accountId/sync',
+        app.post('/api/launchers/:accountId/sync',
             authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController)),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController.prototype.syncLauncher)),
@@ -727,7 +880,7 @@ export function RegisterRoutes(app: Router) {
         const argsLauncherHttpController_syncAllLaunchers: Record<string, TsoaRoute.ParameterSchema> = {
                 req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
-        app.post('/launchers/sync/all',
+        app.post('/api/launchers/sync/all',
             authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController)),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController.prototype.syncAllLaunchers)),
@@ -758,7 +911,7 @@ export function RegisterRoutes(app: Router) {
         const argsLauncherHttpController_scanLocalInstallations: Record<string, TsoaRoute.ParameterSchema> = {
                 req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
-        app.get('/launchers/scan/local',
+        app.get('/api/launchers/scan/local',
             authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController)),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController.prototype.scanLocalInstallations)),
@@ -790,7 +943,7 @@ export function RegisterRoutes(app: Router) {
                 launcherType: {"in":"path","name":"launcherType","required":true,"dataType":"string"},
                 req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
-        app.get('/launchers/:launcherType/scan/local',
+        app.get('/api/launchers/:launcherType/scan/local',
             authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController)),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController.prototype.scanLocalInstallationsByLauncher)),
@@ -822,7 +975,7 @@ export function RegisterRoutes(app: Router) {
                 launcherType: {"in":"path","name":"launcherType","required":true,"dataType":"string"},
                 body: {"in":"body","name":"body","required":true,"ref":"ExchangeCodeBody"},
         };
-        app.post('/launchers/:launcherType/exchange',
+        app.post('/api/launchers/:launcherType/exchange',
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController)),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController.prototype.exchangeCode)),
 
@@ -853,7 +1006,7 @@ export function RegisterRoutes(app: Router) {
                 launcherType: {"in":"path","name":"launcherType","required":true,"dataType":"string"},
                 req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
-        app.get('/launchers/:launcherType/local-config',
+        app.get('/api/launchers/:launcherType/local-config',
             authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController)),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController.prototype.getLocalConfig)),
@@ -886,7 +1039,7 @@ export function RegisterRoutes(app: Router) {
                 body: {"in":"body","name":"body","required":true,"ref":"LocalConfigBody"},
                 req: {"in":"request","name":"req","required":true,"dataType":"object"},
         };
-        app.put('/launchers/:launcherType/local-config',
+        app.put('/api/launchers/:launcherType/local-config',
             authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController)),
             ...(fetchMiddlewares<RequestHandler>(LauncherHttpController.prototype.upsertLocalConfig)),
@@ -917,7 +1070,7 @@ export function RegisterRoutes(app: Router) {
         const argsAuthHttpController_register: Record<string, TsoaRoute.ParameterSchema> = {
                 body: {"in":"body","name":"body","required":true,"ref":"RegisterBody"},
         };
-        app.post('/auth/register',
+        app.post('/api/auth/register',
             ...(fetchMiddlewares<RequestHandler>(AuthHttpController)),
             ...(fetchMiddlewares<RequestHandler>(AuthHttpController.prototype.register)),
 
@@ -947,7 +1100,7 @@ export function RegisterRoutes(app: Router) {
         const argsAuthHttpController_login: Record<string, TsoaRoute.ParameterSchema> = {
                 body: {"in":"body","name":"body","required":true,"ref":"LoginBody"},
         };
-        app.post('/auth/login',
+        app.post('/api/auth/login',
             ...(fetchMiddlewares<RequestHandler>(AuthHttpController)),
             ...(fetchMiddlewares<RequestHandler>(AuthHttpController.prototype.login)),
 
@@ -977,7 +1130,7 @@ export function RegisterRoutes(app: Router) {
         const argsAuthHttpController_registerWithGoogle: Record<string, TsoaRoute.ParameterSchema> = {
                 body: {"in":"body","name":"body","required":true,"ref":"GoogleAuthBody"},
         };
-        app.post('/auth/register/google',
+        app.post('/api/auth/register/google',
             ...(fetchMiddlewares<RequestHandler>(AuthHttpController)),
             ...(fetchMiddlewares<RequestHandler>(AuthHttpController.prototype.registerWithGoogle)),
 
@@ -1007,7 +1160,7 @@ export function RegisterRoutes(app: Router) {
         const argsAuthHttpController_loginWithGoogle: Record<string, TsoaRoute.ParameterSchema> = {
                 body: {"in":"body","name":"body","required":true,"ref":"GoogleAuthBody"},
         };
-        app.post('/auth/login/google',
+        app.post('/api/auth/login/google',
             ...(fetchMiddlewares<RequestHandler>(AuthHttpController)),
             ...(fetchMiddlewares<RequestHandler>(AuthHttpController.prototype.loginWithGoogle)),
 
@@ -1028,6 +1181,35 @@ export function RegisterRoutes(app: Router) {
                 next,
                 validatedArgs,
                 successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsAuthHttpController_autoLogin: Record<string, TsoaRoute.ParameterSchema> = {
+        };
+        app.post('/api/auth/auto-login',
+            ...(fetchMiddlewares<RequestHandler>(AuthHttpController)),
+            ...(fetchMiddlewares<RequestHandler>(AuthHttpController.prototype.autoLogin)),
+
+            async function AuthHttpController_autoLogin(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsAuthHttpController_autoLogin, request, response });
+
+                const controller = new AuthHttpController();
+
+              await templateService.apiHandler({
+                methodName: 'autoLogin',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 200,
               });
             } catch (err) {
                 return next(err);

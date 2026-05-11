@@ -70,4 +70,5 @@ export const EnvConfig = {
   // Local install path overrides (optional — scanner uses well-known defaults if unset)
   STEAM_INSTALL_PATH: process.env.STEAM_INSTALL_PATH || undefined,
   EPIC_MANIFESTS_PATH: process.env.EPIC_MANIFESTS_PATH || undefined,
+  XBOX_INSTALL_PATH: process.env.XBOX_INSTALL_PATH || undefined,
 };

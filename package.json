@@ -1,7 +1,7 @@
 {
   "name": "launcher_of_launchers_backend",
   "version": "1.0.0",
-  "description": "Backend for unified launcher - Express + TypeScript",
+  "description": "Launcher of launchers",
   "license": "ISC",
   "author": "",
   "type": "commonjs",
@@ -10,13 +10,14 @@
     "build": "tsoa spec-and-routes && tsc && tsc-alias",
     "build:electron": "tsc -p tsconfig.electron.json",
     "start": "node dist/index.js",
-    "predev": "npm run tsoa",
+    "predev": "npm run copy-front && npm run tsoa",
     "dev": "nodemon",
     "tsoa": "tsoa spec-and-routes",
     "test": "echo \"Error: no test specified\" && exit 1",
     "generate-steam": "openapi-generator-cli generate -i https://raw.githubusercontent.com/ceva24/openapi-steamworks-web-api/main/dist/steamworks-web-api.json -g typescript-axios -o ./src/connectors/steam-api --additional-properties=withSeparateModelsAndApi=true,apiPackage=api,modelPackage=model,useSingleRequestParameter=true,supportsES6=true,typescriptThreePlus=true",
     "electron:run": "electron dist/electron/main.js",
     "electron:dev": "npm run build && npm run build:electron && electron dist/electron/main.js",
+    "copy-front": "powershell -ExecutionPolicy Bypass -Command \"$src = '../launcher_of_launchers_front/dist/launcher-of-launchers-front/browser'; if (Test-Path $src) { if (Test-Path frontend) { Remove-Item frontend -Recurse -Force }; Copy-Item -Path $src -Destination frontend -Recurse } else { Write-Host 'Frontend dist no encontrado, omitiendo copia.' }\"",
     "dist:dir": "powershell -ExecutionPolicy Bypass -File ../build-desktop.ps1 -Target dir",
     "dist:portable": "powershell -ExecutionPolicy Bypass -File ../build-desktop.ps1 -Target portable",
     "dist:win": "powershell -ExecutionPolicy Bypass -File ../build-desktop.ps1 -Target win"
@@ -52,6 +53,14 @@
   "build": {
     "appId": "com.launcher.launchers",
     "productName": "Launcher of Launchers",
+    "protocols": [
+      {
+        "name": "Launcher of Launchers",
+        "schemes": [
+          "launcher-of-launchers"
+        ]
+      }
+    ],
     "asar": true,
     "asarUnpack": [
       "**/node_modules/sqlite3/**"
@@ -70,7 +79,9 @@
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "allowToChangeInstallationDirectory": true,
+      "include": "build/installer.nsh",
+      "warningsAsErrors": false
     }
   }
 }

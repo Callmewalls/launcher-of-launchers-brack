@@ -28,5 +28,18 @@ const sequelize = isSQLite
         },
       }
     );
-
 export default sequelize;
+
+// If running with SQLite, set a busy timeout to reduce SQLITE_BUSY errors
+// when the app performs many write operations in short succession.
+if (isSQLite) {
+  (async () => {
+    try {
+      await sequelize.authenticate();
+      await sequelize.query('PRAGMA busy_timeout = 5000;');
+      console.log('[database] SQLite PRAGMA busy_timeout set to 5000ms');
+    } catch (err) {
+      console.error('[database] Failed to set SQLite PRAGMA busy_timeout', err);
+    }
+  })();
+}

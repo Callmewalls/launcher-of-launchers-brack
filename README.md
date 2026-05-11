@@ -1,6 +1,6 @@
 # Launcher of Launchers — Backend
 
-API REST que unifica la biblioteca de juegos de múltiples launchers (Steam, Epic, GOG, Ubisoft Connect, EA App, Battle.net) en una sola cuenta de usuario.
+API REST que unifica la biblioteca de juegos de múltiples launchers (Steam, Epic, GOG, Ubisoft Connect, EA App, Battle.net, Xbox App/Game Pass PC) en una sola cuenta de usuario.
 
 ## Stack
 
@@ -103,6 +103,7 @@ UBISOFT_CLIENT_ID=       UBISOFT_CLIENT_SECRET=       UBISOFT_REDIRECT_URI=
 EA_CLIENT_ID=            EA_CLIENT_SECRET=            EA_REDIRECT_URI=
 BATTLENET_CLIENT_ID=     BATTLENET_CLIENT_SECRET=     BATTLENET_REDIRECT_URI=
 BATTLENET_REGION=eu
+XBOX_INSTALL_PATH=
 ```
 
 ---
@@ -185,7 +186,7 @@ users
 launcher_accounts
   id (UUID PK)
   user_id → users.id (CASCADE)
-  launcher_type (ENUM: steam | epic | gog | uplay | origin | battlenet | other)
+  launcher_type (ENUM: steam | epic | gog | uplay | origin | battlenet | xbox | other)
   account_name · platform_user_id (SteamID64, etc.)
   access_token · refresh_token · token_expires_at (cifrados)
   is_linked · linked_at · last_sync_at · timestamps
@@ -240,6 +241,19 @@ Los launchers OAuth2 extienden `OAuth2LauncherService` (que implementa `buildAut
 El `LauncherServiceRegistry` registra todos los servicios al arrancar. `SyncService` itera las cuentas vinculadas del usuario y hace upsert idempotente en `game_catalog` y `user_games`.
 
 Para añadir un nuevo launcher ver [docs/launchers.md](docs/launchers.md).
+
+### Por qué `ILauncherService` es una interfaz y `OAuth2LauncherService` es una clase abstracta
+
+`ILauncherService` define el contrato mínimo que cualquier launcher debe cumplir. Sirve para que el registry, los sync use-cases y los controllers trabajen contra una forma común sin depender de una implementación concreta.
+
+`OAuth2LauncherService` es abstracta porque encapsula comportamiento compartido de varios launchers OAuth2: construcción de la URL de auth, intercambio de código por tokens, refresh y mapeo base de la respuesta. Esa lógica común vive una sola vez, mientras que cada launcher concreta solo implementa o ajusta lo que cambia.
+
+En resumen:
+
+- `interface` = contrato estable, sin estado ni lógica obligatoria.
+- `abstract class` = contrato + implementación compartida + puntos de extensión.
+
+Steam no hereda de `OAuth2LauncherService` porque usa OpenID 2.0, no OAuth2, así que implementa `ILauncherService` directamente.
 
 ---
 

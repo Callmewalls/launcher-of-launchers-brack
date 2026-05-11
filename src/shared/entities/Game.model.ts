@@ -13,9 +13,27 @@ export class GameCatalog extends Model {
   public launcherId!: string;
   public title!: string;
   public coverUrl?: string;
+  public gridImageUrl?: string;
+  public backgroundImageUrl?: string;
   public description?: string;
+  public detailedDescription?: string;
+  public aboutTheGame?: string;
   public releaseDate?: Date;
   public genres?: object;
+  public categories?: object;
+  public screenshots?: object;
+  public movies?: object;
+  public developers?: object;
+  public publishers?: object;
+  public platforms?: object;
+  public metacriticScore?: number;
+  public metacriticUrl?: string;
+  public website?: string;
+  public supportedLanguages?: string;
+  public requiredAge?: number;
+  public isFree?: boolean;
+  /** Null means store details have never been fetched for this game. */
+  public detailsFetchedAt?: Date | null;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -28,7 +46,7 @@ GameCatalog.init(
       primaryKey: true,
     },
     launcher: {
-      type: DataTypes.ENUM('steam', 'epic', 'gog', 'uplay', 'origin', 'battlenet', 'other'),
+      type: DataTypes.ENUM('steam', 'epic', 'gog', 'uplay', 'origin', 'battlenet', 'xbox', 'other'),
       allowNull: false,
     },
     launcherId: {
@@ -44,8 +62,25 @@ GameCatalog.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    gridImageUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      comment: 'Absolute local path to Steam librarycache grid portrait (library_600x900.jpg|png).',
+    },
+    backgroundImageUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     description: {
       type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    detailedDescription: {
+      type: DataTypes.TEXT('long'),
+      allowNull: true,
+    },
+    aboutTheGame: {
+      type: DataTypes.TEXT('long'),
       allowNull: true,
     },
     releaseDate: {
@@ -55,6 +90,60 @@ GameCatalog.init(
     genres: {
       type: DataTypes.JSON,
       allowNull: true,
+    },
+    categories: {
+      type: DataTypes.JSON,
+      allowNull: true,
+    },
+    screenshots: {
+      type: DataTypes.JSON,
+      allowNull: true,
+    },
+    movies: {
+      type: DataTypes.JSON,
+      allowNull: true,
+    },
+    developers: {
+      type: DataTypes.JSON,
+      allowNull: true,
+    },
+    publishers: {
+      type: DataTypes.JSON,
+      allowNull: true,
+    },
+    platforms: {
+      type: DataTypes.JSON,
+      allowNull: true,
+    },
+    metacriticScore: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    metacriticUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    website: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    supportedLanguages: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    requiredAge: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    isFree: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
+    detailsFetchedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: null,
+      comment: 'Timestamp of last successful store-details fetch. NULL = never fetched.',
     },
   },
   {
@@ -71,6 +160,10 @@ GameCatalog.init(
       {
         fields: ['title'],
         name: 'idx_game_catalog_title',
+      },
+      {
+        fields: ['details_fetched_at'],
+        name: 'idx_game_catalog_details_fetched_at',
       },
     ],
   }

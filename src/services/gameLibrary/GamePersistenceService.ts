@@ -42,6 +42,10 @@ export class GamePersistenceService {
     const result: PersistGamesResult = { added: 0, updated: 0, errors: 0 };
     if (games.length === 0) return result;
 
+    Logger.log(`[GamePersistenceService] Persisting ${games.length} game(s) for launcher ${launcherType} (user: ${userId})`);
+    const withGrid = games.filter((g) => !!g.gridImagePath).length;
+    Logger.log(`[GamePersistenceService] Grid image payload present for ${withGrid}/${games.length} game(s)`);
+
     const { executablePattern, skipInstallStateUpdate } = options;
 
     // Batch pre-load: one SELECT for all existing ownerships for this user.
@@ -58,21 +62,29 @@ export class GamePersistenceService {
       existingRows.map((r) => [r.gameCatalogId, r.isInstalled]),
     );
 
-    // Dispatch catalog + ownership upserts concurrently
-    const settlements = await Promise.allSettled(
-      games.map(async (game) => {
+    // Dispatch catalog + ownership upserts sequentially to avoid SQLITE_BUSY
+    // errors with many concurrent writers. This is slower but reliable for
+    // local desktop usage where game counts are moderate.
+    const sequentialResults: Array<'added' | 'updated' | { error: unknown }> = [];
+    for (const game of games) {
+      try {
+        Logger.log(
+          `[GamePersistenceService] Persisting game candidate: launcherId=${game.launcherId} title=${game.title} hasGrid=${game.gridImagePath ? 'yes' : 'no'}`,
+        );
         const catalogEntry = await gameCatalogRepository.upsertByLauncherId(
           launcherType,
           game.launcherId,
-          { title: game.title, coverUrl: game.coverUrl },
+          {
+            title: game.title,
+            coverUrl: game.coverUrl,
+            gridImageUrl: game.gridImagePath,
+            description: game.description,
+          },
         );
 
         const existingInstalled = existingInstallMap.get(catalogEntry.id);
         const isNew = existingInstalled === undefined;
 
-        // When there is no reliable local-scan data, preserve the existing
-        // isInstalled value so a failed or unavailable scan does not flip
-        // installed games back to false.  New records always start as false.
         const resolvedIsInstalled =
           skipInstallStateUpdate && !isNew
             ? existingInstalled!
@@ -96,18 +108,18 @@ export class GamePersistenceService {
           },
         );
 
-        return isNew ? ('added' as const) : ('updated' as const);
-      }),
-    );
-
-    for (const settlement of settlements) {
-      if (settlement.status === 'fulfilled') {
-        if (settlement.value === 'added') result.added++;
-        else result.updated++;
-      } else {
+        sequentialResults.push(isNew ? 'added' : 'updated');
+      } catch (err) {
+        sequentialResults.push({ error: err });
         result.errors++;
-        Logger.error('[GamePersistenceService] Failed to persist game', settlement.reason);
+        Logger.error('[GamePersistenceService] Failed to persist game', err);
       }
+    }
+
+    for (const r of sequentialResults) {
+      if (r === 'added') result.added++;
+      else if (r === 'updated') result.updated++;
+      // errors already counted above
     }
 
     return result;

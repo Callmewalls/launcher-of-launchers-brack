@@ -37,6 +37,23 @@ export class UserGameRepository extends BaseRepository<UserGame> {
     return UserGame.count({ where: { userId } });
   }
 
+  /** Finds a single UserGame by PK, ensuring it belongs to userId, with GameCatalog included. */
+  async findByUserAndId(userId: string, userGameId: string): Promise<UserGame | null> {
+    return UserGame.findOne({
+      where: { id: userGameId, userId },
+      include: [{ model: GameCatalog, as: GAME_CATALOG_ASSOC }],
+    });
+  }
+
+  /** Finds multiple UserGames by PKs in a single query, ensuring they all belong to userId. */
+  async findByUserAndIds(userId: string, userGameIds: string[]): Promise<UserGame[]> {
+    if (userGameIds.length === 0) return [];
+    return UserGame.findAll({
+      where: { id: { [Op.in]: userGameIds }, userId },
+      include: [{ model: GameCatalog, as: GAME_CATALOG_ASSOC }],
+    });
+  }
+
   /**
    * Upserts a user's ownership record.
    * Safe to call on every sync — won't create duplicates.
@@ -58,9 +75,15 @@ export class UserGameRepository extends BaseRepository<UserGame> {
         ...data,
       },
       // Conflict key mirrors uk_user_game_ownership: one row per (user, game).
-      // launcherAccountId is updated in place so it always reflects the most
-      // recent sync source (real linked account wins over synthetic local one).
-      { conflictFields: ['userId', 'gameCatalogId'] as any },
+      // Use actual DB column names for the conflict fields (Sequelize will
+      // otherwise generate SQL using the JS attribute names like `userId`,
+      // which don't exist when `underscored: true` is used and SQLite columns
+      // are `user_id`/`game_catalog_id`).
+      (() => {
+        const attrs = ['userId', 'gameCatalogId'];
+        const conflictFields = attrs.map((a) => (UserGame.rawAttributes[a] && (UserGame.rawAttributes[a] as any).field) || a);
+        return { conflictFields: conflictFields as any };
+      })(),
     );
     return record;
   }

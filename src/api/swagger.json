@@ -169,6 +169,10 @@
 					"coverUrl": {
 						"type": "string"
 					},
+					"gridImageUrl": {
+						"type": "string",
+						"description": "Absolute local path to the Steam grid portrait image (library_600x900.jpg|png)."
+					},
 					"description": {
 						"type": "string"
 					},
@@ -213,6 +217,34 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"Record_string.string_": {
+				"properties": {},
+				"additionalProperties": {
+					"type": "string"
+				},
+				"type": "object",
+				"description": "Construct a type with a set of properties K of type T"
+			},
+			"BatchGridImagesResponse": {
+				"$ref": "#/components/schemas/Record_string.string_",
+				"description": "Map of userGameId → base64 data URL (e.g. \"data:image/jpeg;base64,...\"). Missing images are omitted."
+			},
+			"BatchGridImagesBody": {
+				"properties": {
+					"ids": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array",
+						"description": "List of userGameIds whose grid images should be returned."
+					}
+				},
+				"required": [
+					"ids"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"LibraryErrorResponse": {
 				"properties": {
 					"success": {
@@ -229,6 +261,103 @@
 				"required": [
 					"success",
 					"error"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GameDetailDto": {
+				"properties": {
+					"userGameId": {
+						"type": "string"
+					},
+					"id": {
+						"type": "string"
+					},
+					"title": {
+						"type": "string"
+					},
+					"launcher": {
+						"type": "string"
+					},
+					"launcherId": {
+						"type": "string"
+					},
+					"coverUrl": {
+						"type": "string"
+					},
+					"gridImageUrl": {
+						"type": "string"
+					},
+					"backgroundImageUrl": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"detailedDescription": {
+						"type": "string"
+					},
+					"aboutTheGame": {
+						"type": "string"
+					},
+					"releaseDate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"genres": {},
+					"categories": {},
+					"screenshots": {},
+					"movies": {},
+					"developers": {},
+					"publishers": {},
+					"platforms": {},
+					"metacriticScore": {
+						"type": "number",
+						"format": "double"
+					},
+					"metacriticUrl": {
+						"type": "string"
+					},
+					"website": {
+						"type": "string"
+					},
+					"supportedLanguages": {
+						"type": "string"
+					},
+					"requiredAge": {
+						"type": "number",
+						"format": "double"
+					},
+					"isFree": {
+						"type": "boolean"
+					},
+					"detailsFetchedAt": {
+						"type": "string",
+						"format": "date-time",
+						"nullable": true
+					},
+					"isInstalled": {
+						"type": "boolean"
+					},
+					"installPath": {
+						"type": "string"
+					},
+					"executablePath": {
+						"type": "string"
+					},
+					"playtime": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"userGameId",
+					"id",
+					"title",
+					"launcher",
+					"launcherId",
+					"isInstalled",
+					"playtime"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -342,6 +471,9 @@
 						"type": "string"
 					},
 					"accountName": {
+						"type": "string"
+					},
+					"platformUserId": {
 						"type": "string"
 					}
 				},
@@ -478,7 +610,7 @@
 	"info": {
 		"title": "Launcher of Launchers API",
 		"version": "1.0.0",
-		"description": "Backend for unified launcher - Express + TypeScript",
+		"description": "Launcher of launchers",
 		"license": {
 			"name": "ISC"
 		},
@@ -683,6 +815,43 @@
 				"parameters": []
 			}
 		},
+		"/library/grid-images/batch": {
+			"post": {
+				"operationId": "GetBatchGridImages",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BatchGridImagesResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Devuelve las grid images de varios juegos en una sola petición.\r\nHace 1 query a la BD y lee todos los ficheros en paralelo.\r\nLas imágenes ausentes simplemente se omiten del resultado.",
+				"tags": [
+					"Library"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/BatchGridImagesBody"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/library/{userGameId}/icon": {
 			"get": {
 				"operationId": "GetIcon",
@@ -715,6 +884,109 @@
 					}
 				},
 				"description": "Devuelve el ícono PNG embebido en el ejecutable local del juego.\r\n404 cuando el juego no está instalado o no tiene executablePath.\r\nCacheable 24 h — los íconos no cambian entre sincronizaciones.",
+				"tags": [
+					"Library"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userGameId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/library/{userGameId}/grid": {
+			"get": {
+				"operationId": "GetGridImage",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"image/*": {
+								"schema": {
+									"anyOf": [
+										{
+											"type": "string",
+											"format": "byte"
+										},
+										{}
+									]
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Grid image no disponible",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/LibraryErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Devuelve la grid image (portrait) encontrada por el scanner local.\r\nSe sirve por HTTP autenticado para evitar bloqueos del navegador al cargar file://.",
+				"tags": [
+					"Library"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userGameId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/library/{userGameId}/detail": {
+			"get": {
+				"operationId": "GetDetail",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/GameDetailDto"
+										},
+										{}
+									]
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Juego no encontrado",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/LibraryErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Devuelve el detalle completo de un juego.\r\nSi los datos de la store todavía no han sido obtenidos (detailsFetchedAt IS NULL),\r\nlos obtiene en este momento, los persiste en la DB y los devuelve.\r\nLas llamadas posteriores se sirven directamente desde la cache en DB.",
 				"tags": [
 					"Library"
 				],
@@ -1704,6 +1976,27 @@
 						}
 					}
 				}
+			}
+		},
+		"/auth/auto-login": {
+			"post": {
+				"operationId": "AutoLogin",
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Auto-login silencioso para la app desktop local.\r\nCrea el usuario local si no existe y devuelve un JWT válido.\r\nSolo debe llamarse desde localhost.",
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": []
 			}
 		}
 	},

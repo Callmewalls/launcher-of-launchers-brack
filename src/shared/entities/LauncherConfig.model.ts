@@ -39,7 +39,7 @@ LauncherConfig.init(
       onDelete: 'CASCADE',
     },
     launcherType: {
-      type: DataTypes.ENUM('steam', 'epic', 'gog', 'uplay', 'origin', 'battlenet', 'other'),
+      type: DataTypes.ENUM('steam', 'epic', 'gog', 'uplay', 'origin', 'battlenet', 'xbox', 'other'),
       allowNull: false,
     },
     installBasePath: {

@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Body, Path, Query, Route, Tags, Security, SuccessResponse, Response, Request } from 'tsoa';
-import { LauncherLinkService } from '@services/launchers/LauncherLinkService';
+import { LauncherLinkService } from '@services/launchers/facades/LauncherLinkService';
 import { Logger } from '@utils/logger';
 import { LauncherType } from '@shared/types/launcher.types';
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware';
@@ -9,7 +9,7 @@ interface AuthUrlResponse { success: true; authUrl: string; }
 interface MessageResponse { success: true; message: string; }
 interface CapabilitiesResponse { success: true; launchers: unknown; }
 interface LocalConfigResponse { success: true; config: unknown; }
-interface LinkLauncherBody { launcherType: string; accountName: string; }
+interface LinkLauncherBody { launcherType: string; accountName: string; platformUserId?: string; }
 interface ExchangeCodeBody { code: string; state: string; }
 interface LocalConfigBody { installBasePath?: string; executablePattern?: string; }
 
@@ -105,7 +105,12 @@ export class LauncherHttpController extends Controller {
   public async linkLauncher(@Body() body: LinkLauncherBody, @Request() req: any): Promise<unknown> {
     const userId = (req as AuthenticatedRequest).authUserId;
     this.setStatus(201);
-    return this.launcherLinkService.linkLauncher(userId, body.launcherType as LauncherType, body.accountName);
+    return this.launcherLinkService.linkLauncher(
+      userId,
+      body.launcherType as LauncherType,
+      body.accountName,
+      body.platformUserId?.trim() || undefined,
+    );
   }
 
   /** Desvincula una cuenta de launcher */

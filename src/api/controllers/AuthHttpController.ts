@@ -65,5 +65,16 @@ export class AuthHttpController extends Controller {
   public async loginWithGoogle(@Body() body: GoogleAuthBody): Promise<unknown> {
     return this.authService.loginWithGoogle(body.idToken);
   }
+
+  /**
+   * Auto-login silencioso para la app desktop local.
+   * Crea el usuario local si no existe y devuelve un JWT válido.
+   * Solo debe llamarse desde localhost.
+   */
+  @Post('auto-login')
+  @SuccessResponse(200, 'OK')
+  public async autoLogin(): Promise<unknown> {
+    return this.authService.autoLogin();
+  }
 }
 

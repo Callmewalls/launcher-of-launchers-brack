@@ -10,6 +10,8 @@ export interface LibraryItemDto {
   launcher: string;
   launcherId: string;
   coverUrl?: string;
+  /** Absolute local path to the Steam grid portrait image (library_600x900.jpg|png). */
+  gridImageUrl?: string;
   description?: string;
   releaseDate?: Date;
   genres?: unknown;
@@ -35,6 +37,8 @@ export class UserLibraryService {
 
     return deduplicated.map((entry) => {
       const game = entry.get(GAME_CATALOG_ASSOC) as GameCatalog;
+      const resolvedGridUrl = game.gridImageUrl ? `/library/${entry.id}/grid` : undefined;
+      const resolvedCoverUrl = resolvedGridUrl ?? game.coverUrl;
 
       return {
         userGameId: entry.id,
@@ -42,7 +46,12 @@ export class UserLibraryService {
         title: game.title,
         launcher: game.launcher,
         launcherId: game.launcherId,
-        coverUrl: game.coverUrl,
+        // Backward compatibility: many clients already bind the card image to coverUrl.
+        // If a Steam grid image exists, promote it to coverUrl so desktop shows it
+        // without requiring immediate frontend changes.
+        coverUrl: resolvedCoverUrl,
+        // Expose authenticated backend endpoint for grid image.
+        gridImageUrl: resolvedGridUrl,
         description: game.description,
         releaseDate: game.releaseDate,
         genres: game.genres,

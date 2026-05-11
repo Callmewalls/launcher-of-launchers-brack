@@ -31,11 +31,18 @@ class LauncherConfigRepository {
   }
 
   async upsert(userId: string, launcherType: LauncherType, data: LauncherConfigData): Promise<LauncherConfig> {
-    const [config] = await LauncherConfig.upsert({
-      userId,
-      launcherType,
-      ...data,
-    });
+    const [config] = await LauncherConfig.upsert(
+      {
+        userId,
+        launcherType,
+        ...data,
+      },
+      {
+        conflictFields: ['userId', 'launcherType'].map(
+          (attribute) => (LauncherConfig.rawAttributes[attribute] as any)?.field || attribute,
+        ) as any,
+      },
+    );
     return config;
   }
 

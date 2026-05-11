@@ -18,6 +18,7 @@
   },
   "routes": {
     "routesDir": "src/api/routes",
-    "authenticationModule": "src/api/middlewares/tsoa.auth.ts"
+    "authenticationModule": "src/api/middlewares/tsoa.auth.ts",
+    "basePath": "/api"
   }
 }
